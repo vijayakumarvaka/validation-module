@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="Validation_scopes_Routers_All" doc:id="852132db-bf2a-4903-a90e-db0c9024ae8f" >
+		<http:listener doc:name="Listener" doc:id="5b23f8cd-baaf-4376-b249-c218f1bb9345" config-ref="HTTP_Listener_config" path="/ALL" />
+		<validation:all doc:name="All" doc:id="96c26b77-878a-4b88-91e9-32fd81ac0b1a" >
+			<validation:is-not-blank-string doc:name="Is not blank string" doc:id="cac83895-7e76-44cc-9a3b-d784d239ab0a" value="#[payload.Name]"/>
+			<validation:is-not-null doc:name="Is not null" doc:id="fe9a3690-7e51-45f8-915d-706af512819a" value="#[payload.Name]"/>
+		</validation:all>
+		<logger level="INFO" doc:name="Logger" doc:id="94feddee-d84e-4140-87b7-e612dbdc7216" message="ALL - validation is successful"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="829c0417-4e6f-498a-88a7-e292f670e098" type="ANY">
+				<logger level="INFO" doc:name="Logger" doc:id="c8dc262c-6331-423a-a1f8-8dd890143343" message='validation error - VALIDATION MULTIPLE'/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="Validation_scopes_Routers_ANY" doc:id="781b0359-5a31-423f-b38f-3a9678ae4d78" >
+		<http:listener doc:name="Listener" doc:id="db2daaa5-312a-48f2-ba7f-021d088995b6" config-ref="HTTP_Listener_config" path="/ANY"/>
+		<validation:any doc:name="Any" doc:id="45bbef2c-0b4b-4c10-b2ee-bcd146497c79" >
+			<validation:is-null doc:name="Is null" doc:id="a7686e16-403a-4f67-916e-1951bd9f86eb" value="#[payload.age]"/>
+			<validation:is-true doc:name="Is true" doc:id="8836db9f-e837-4e05-aa5a-277afc94de79" expression="#[payload.age &gt; 18]"/>
+		</validation:any>
+		<logger level="INFO" doc:name="Logger" doc:id="8451baf6-6a02-4b7f-b5a7-a3fed668227e" message="ANY - validation is successful"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dd9191b1-03c2-4b41-ba7f-e5739089d556" type="VALIDATION:MULTIPLE">
+				<logger level="INFO" doc:name="Logger" doc:id="77d56fae-e768-44f8-b47d-0e2fb9df045d" message="validation error - VALIDATION MULTIPLE" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	
+</mule>
